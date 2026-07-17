@@ -1,0 +1,89 @@
+name: snapshot-asmc
+
+on:
+  schedule:
+    - cron: '45 9 * * *'
+    # Second daily pass for alert levels 2-3 (ASMC updates 0300 UTC + 0900 UTC
+    # during elevated alert). Enable manually by uncommenting during a live episode.
+    # - cron: '45 3 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot-asmc
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Rule 3: sync to the true tip of main BEFORE computing anything.
+      # actions/checkout restores the trigger-time SHA, not necessarily the
+      # tip -- a prior run's commit could otherwise be silently clobbered.
+      - name: Sync to latest main
+        run: |
+          git fetch origin main
+          git reset --hard FETCH_HEAD
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run snapshot
+        id: snapshot
+        run: python snapshot_asmc.py
+        continue-on-error: true
+
+      # Rule 2: every file the bot writes is under data/asmc/ -- add it all,
+      # regardless of whether the snapshot step above succeeded or failed
+      # (a failed run still writes situation.html/manifest.json for
+      # whatever it captured before hitting an error).
+      - name: Commit captured data
+        run: |
+          git config user.name "haze-collector-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/asmc/
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "snapshot: $(date -u +%Y-%m-%d) ASMC capture"
+          fi
+
+      # Rule 1: explicit success flag, exit 1 on exhaustion. A bare for-loop
+      # exits 0 even when every push attempt failed -- this is the collector's
+      # known killer (a green run that persisted nothing).
+      - name: Push with retry
+        run: |
+          pushed=false
+          for attempt in 1 2 3 4 5; do
+            if git push origin HEAD:main; then
+              pushed=true
+              break
+            fi
+            echo "push attempt $attempt failed, resyncing and retrying..."
+            git fetch origin main
+            git rebase origin/main
+            sleep $((attempt * 5))
+          done
+          if [ "$pushed" != "true" ]; then
+            echo "::error::all push attempts failed -- data captured locally but NOT persisted"
+            exit 1
+          fi
+
+      # The Actions run must show red if the snapshot itself failed (page
+      # structure changed, fetch failed), even though we already persisted
+      # whatever was captured. This runs LAST, after the push above.
+      - name: Fail run if snapshot script reported errors
+        if: steps.snapshot.outcome == 'failure'
+        run: |
+          echo "::error::snapshot_asmc.py exited non-zero -- see manifest.json errors[] for detail"
+          exit 1
