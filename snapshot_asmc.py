@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 """Daily snapshot of ASMC products that don't self-archive: the regional haze
-situation text, daily hotspot counts (Sumatra/Kalimantan), and NOAA-20
-false-color satellite imagery for Sumatra and Kalimantan (the two regions
-matching haze-replay's own FIRMS bbox -- other ASEAN regions ASMC offers are
-out of scope per haze-replay constraints.md "multi-country coverage... out").
-Runs unattended on GitHub Actions (.github/workflows/snapshot.yml, cron
-45 9 * * * UTC).
+situation text; daily hotspot counts for Sumatra, Kalimantan, Peninsular
+Malaysia, and Sabah & Sarawak (regional fire activity isn't Indonesia-only,
+even if Indonesia dominates most El Nino haze years -- counts are cheap, so
+capture the fuller regional picture rather than presuppose the source); and
+NOAA-20 false-color satellite imagery for Sumatra and Kalimantan specifically
+(the two regions matching haze-replay's own FIRMS bbox and this project's
+Indonesia-source/Singapore-response narrative -- imagery is comparatively
+expensive to store, so stays scoped narrower than the free-to-capture counts;
+other ASEAN regions/imagery are out per haze-replay constraints.md
+"multi-country coverage... out"). Runs unattended on GitHub Actions
+(.github/workflows/snapshot.yml, cron 45 9 * * * UTC).
 
 Page structure verified live 2026-07-17 (see haze-replay docs/decisions.md
 Spec Deviations for the full research trail). No third-party HTML-parsing
@@ -220,7 +225,7 @@ def capture_hotspot_counts(out_dir, errors, captured_files):
             data={
                 "date": date_str,
                 "pastDays": "7",
-                "regions[]": ["Sumatra", "Kalimantan"],
+                "regions[]": ["Sumatra", "Kalimantan", "P_Malaysia", "SabahSarawak"],
                 "daynight": "day",
                 "conf": "High",
             },

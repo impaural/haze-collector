@@ -1,19 +1,19 @@
 {
-  "last_run_utc": "2026-07-17T02:28:07Z",
-  "last_success_utc": "2026-07-17T02:28:07Z",
+  "last_run_utc": "2026-07-17T02:29:48Z",
+  "last_success_utc": "2026-07-17T02:29:48Z",
   "files_captured": 5,
   "files": [
     {
       "path": "data/asmc/2026-07-17/situation.html",
-      "sha256": "4647cb4d0d97b8490b26cca03ab64960c4b952a541b8e47884b5756689628927"
+      "sha256": "c9b58d80a6eed419c583962ff596bd9dee0fb17519ba7d643976bc58ad8c50c6"
     },
     {
       "path": "data/asmc/2026-07-17/situation.txt",
-      "sha256": "f0fd28a6ae7481969c3ddb85d835de88b2a7fd38e54dea52f2c1b4a1dfbc4a83"
+      "sha256": "892e9e77fe0bd2ff5541ec92dee72331c44b9538e57bed4cf85f3ae6187d060f"
     },
     {
       "path": "data/asmc/2026-07-17/hotspot_counts.json",
-      "sha256": "f6398285cc66bb5917d2eaeef49eb34526249fcd54e94094f0323be4e9ec562f"
+      "sha256": "366ea36f84a31a90d51f6f2c450f8981ac5d951674eb72e45dca84306c17349a"
     },
     {
       "path": "data/asmc/2026-07-17/noaa20_sumatra.jpg",
