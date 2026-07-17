@@ -1,8 +1,16 @@
 {
-  "last_run_utc": "2026-07-17T01:38:05Z",
-  "last_success_utc": "2026-07-17T01:37:34Z",
-  "files_captured": 2,
+  "last_run_utc": "2026-07-17T01:40:09Z",
+  "last_success_utc": "2026-07-17T01:40:09Z",
+  "files_captured": 4,
   "files": [
+    {
+      "path": "data/asmc/2026-07-17/situation.html",
+      "sha256": "5c64fb714f42322a68ac3c1e4a31d0fec96472a7c6fcaf293a1d921d406f4453"
+    },
+    {
+      "path": "data/asmc/2026-07-17/situation.txt",
+      "sha256": "f0fd28a6ae7481969c3ddb85d835de88b2a7fd38e54dea52f2c1b4a1dfbc4a83"
+    },
     {
       "path": "data/asmc/2026-07-17/hotspot_counts.json",
       "sha256": "f6398285cc66bb5917d2eaeef49eb34526249fcd54e94094f0323be4e9ec562f"
@@ -12,7 +20,5 @@
       "sha256": "b6f9527ad8bb595cdb4347c89c58b4ff5d700c5a6570cd336f090bcf8c11485b"
     }
   ],
-  "errors": [
-    "home page fetch failed: 404 Client Error: Not Found for url: https://asmc.asean.org/this-page-does-not-exist-404/"
-  ]
+  "errors": []
 }
