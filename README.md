@@ -3,7 +3,9 @@
 Unattended daily archive of ASMC (ASEAN Specialised Meteorological Centre) haze
 products that don't self-archive anywhere else: the regional haze situation
 text, daily hotspot counts for Sumatra/Kalimantan, and NOAA-20 false-color
-Sumatra satellite imagery. Built to support the
+satellite imagery for Sumatra and Kalimantan (the two regions matching
+haze-replay's own FIRMS bbox -- other ASEAN regions ASMC offers are out of
+scope). Built to support the
 [haze-replay](https://github.com/impaural/haze-replay) project's health
 banner and future citation needs.
 
@@ -20,7 +22,9 @@ data/asmc/
     situation.html        raw capture of https://asmc.asean.org/home/
     situation.txt         extracted "Latest Weather and Haze Situation" + outlook
     hotspot_counts.json   raw response, Sumatra/Kalimantan, past 7 days, day/high-confidence
-    noaa20_sumatra.jpg    NOAA-20 false-color Sumatra satellite image
+    noaa20_sumatra.jpg    NOAA-20 false-color Sumatra satellite image (page default, no AJAX)
+    noaa20_kalimantan.jpg NOAA-20 false-color Kalimantan satellite image (AJAX lookup, uses
+                          the page's own issueDate -- "today" is often not published yet)
   manifest.json            {last_run_utc, last_success_utc, files_captured, files[], errors[]}
 ```
 

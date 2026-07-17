@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 """Daily snapshot of ASMC products that don't self-archive: the regional haze
 situation text, daily hotspot counts (Sumatra/Kalimantan), and NOAA-20
-false-color Sumatra satellite imagery. Runs unattended on GitHub Actions
-(.github/workflows/snapshot.yml, cron 45 9 * * * UTC).
+false-color satellite imagery for Sumatra and Kalimantan (the two regions
+matching haze-replay's own FIRMS bbox -- other ASEAN regions ASMC offers are
+out of scope per haze-replay constraints.md "multi-country coverage... out").
+Runs unattended on GitHub Actions (.github/workflows/snapshot.yml, cron
+45 9 * * * UTC).
 
 Page structure verified live 2026-07-17 (see haze-replay docs/decisions.md
 Spec Deviations for the full research trail). No third-party HTML-parsing
@@ -24,6 +27,10 @@ SATELLITE_URL = "https://asmc.asean.org/satellite-polar/"
 HOTSPOT_COUNT_URL = (
     "https://asmc.asean.org/wp-content/themes/asmctheme/page-functions/"
     "functions-ajax-haze-daily-hotspot-count-new.php"
+)
+REGION_IMAGE_AJAX_URL = (
+    "https://asmc.asean.org/wp-content/themes/asmctheme/page-functions/"
+    "functions-ajax-satellite-polar.php"
 )
 USER_AGENT = (
     "haze-collector/1.0 (+https://github.com/impaural/haze-collector; "
@@ -116,20 +123,44 @@ class SituationExtractor(HTMLParser):
         return " ".join("".join(self.outlook_parts).split())
 
 
-class Noaa20ImageFinder(HTMLParser):
-    """Finds the NOAA-20 false-color Sumatra <img src> on the satellite page
-    (defaults to today's image on first load, matching what a human visitor
-    sees)."""
+class Noaa20PageParser(HTMLParser):
+    """Finds two things on the satellite-polar page's default (Sumatra) view:
+    the false-color <img src>, and the #issueDate input's value -- ASMC's own
+    "latest published" date (NOAA-20 imagery for "today" is often not ready
+    yet, published in the afternoon; using the page's own default avoids
+    guessing or hardcoding a same-day date that might 404)."""
 
     def __init__(self):
         super().__init__()
+        self.image_url = None
+        self.issue_date = None
+
+    def handle_starttag(self, tag, attrs):
+        attrs_dict = dict(attrs)
+        if tag == "img" and self.image_url is None:
+            src = attrs_dict.get("src", "")
+            if "/polarorbit/noaa20/falseColor_N20_Sumatra_" in src:
+                self.image_url = src
+        if tag == "input" and attrs_dict.get("id") == "issueDate":
+            self.issue_date = attrs_dict.get("value")
+
+
+class RegionImageFinder(HTMLParser):
+    """Finds the <img src> in the HTML fragment returned by
+    functions-ajax-satellite-polar.php for a non-default region (e.g.
+    Kalimantan) -- that endpoint returns a fragment meant to replace
+    #mainDiv's innerHTML, not a full page."""
+
+    def __init__(self, region_code):
+        super().__init__()
+        self.region_code = region_code
         self.image_url = None
 
     def handle_starttag(self, tag, attrs):
         if self.image_url or tag != "img":
             return
         src = dict(attrs).get("src", "")
-        if "/polarorbit/noaa20/falseColor_N20_Sumatra_" in src:
+        if ("/polarorbit/noaa20/falseColor_N20_%s_" % self.region_code) in src:
             self.image_url = src
 
 
@@ -186,25 +217,70 @@ def capture_hotspot_counts(out_dir, errors, captured_files):
     captured_files.append(counts_path)
 
 
-def capture_noaa20_image(out_dir, errors, captured_files):
+def _download_region_image(image_url, out_path, label, errors, captured_files):
+    try:
+        img_resp = fetch(image_url)
+    except requests.RequestException as exc:
+        errors.append("NOAA-20 %s image fetch failed: %s" % (label, exc))
+        return
+    out_path.write_bytes(img_resp.content)
+    captured_files.append(out_path)
+
+
+def fetch_region_image_url(region_code, issue_date):
+    resp = fetch(
+        REGION_IMAGE_AJAX_URL,
+        method="post",
+        data={
+            "satellite_type": "N20",
+            "issue_date": issue_date,
+            "region": region_code,
+            "serverurl": "https://asmc.asean.org/wp-content/themes/asmctheme",
+            "isTrueColor": "False Colour Image",
+        },
+    )
+    finder = RegionImageFinder(region_code)
+    finder.feed(resp.text)
+    return finder.image_url
+
+
+def capture_noaa20_images(out_dir, errors, captured_files):
+    """Sumatra (page default, no AJAX) + Kalimantan (AJAX lookup using the
+    page's own issueDate) -- the two regions matching haze-replay's FIRMS
+    bbox. Kalimantan failing does not block Sumatra or vice versa."""
     try:
         sat_resp = fetch(SATELLITE_URL)
     except requests.RequestException as exc:
         errors.append("satellite page fetch failed: %s" % exc)
         return
-    finder = Noaa20ImageFinder()
-    finder.feed(sat_resp.text)
-    if finder.image_url is None:
-        errors.append("NOAA-20 image URL not found on satellite page (page structure changed)")
+    parser = Noaa20PageParser()
+    parser.feed(sat_resp.text)
+
+    if parser.image_url is None:
+        errors.append("NOAA-20 Sumatra image URL not found on satellite page (page structure changed)")
+    else:
+        _download_region_image(parser.image_url, out_dir / "noaa20_sumatra.jpg", "sumatra", errors, captured_files)
+
+    if parser.issue_date is None:
+        errors.append(
+            "issueDate field not found on satellite page -- cannot fetch Kalimantan image "
+            "(page structure changed)"
+        )
         return
+
+    time.sleep(POLITENESS_SLEEP_SECONDS)
     try:
-        img_resp = fetch(finder.image_url)
+        kali_url = fetch_region_image_url("Kali", parser.issue_date)
     except requests.RequestException as exc:
-        errors.append("NOAA-20 image fetch failed: %s" % exc)
+        errors.append("Kalimantan image AJAX lookup failed: %s" % exc)
         return
-    image_path = out_dir / "noaa20_sumatra.jpg"
-    image_path.write_bytes(img_resp.content)
-    captured_files.append(image_path)
+    if kali_url is None:
+        errors.append(
+            "NOAA-20 Kalimantan image URL not found in AJAX response for issue_date=%r "
+            "(page structure changed, or image not yet published)" % parser.issue_date
+        )
+        return
+    _download_region_image(kali_url, out_dir / "noaa20_kalimantan.jpg", "kalimantan", errors, captured_files)
 
 
 def write_manifest(captured_files, errors, now_iso):
@@ -246,7 +322,7 @@ def main():
     time.sleep(POLITENESS_SLEEP_SECONDS)
     capture_hotspot_counts(out_dir, errors, captured_files)
     time.sleep(POLITENESS_SLEEP_SECONDS)
-    capture_noaa20_image(out_dir, errors, captured_files)
+    capture_noaa20_images(out_dir, errors, captured_files)
 
     now_iso = utc_now_iso()
     write_manifest(captured_files, errors, now_iso)
