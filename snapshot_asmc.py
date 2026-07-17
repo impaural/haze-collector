@@ -13,6 +13,7 @@ deps: html.parser (stdlib) only, per the requests-only dependency rule.
 """
 import hashlib
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -38,6 +39,15 @@ USER_AGENT = (
 )
 MIN_SITUATION_TEXT_LENGTH = 40
 TIMEOUT = 30
+# The ASMC home page embeds its own Google Maps JS API key verbatim (visible
+# to any browser via view-source -- Maps JS keys are inherently client-side
+# and protected by Google-side referrer restriction, not secrecy). Redacted
+# here anyway, on the same principle as FIRMS_MAP_KEY redaction in
+# haze-replay: this repo shouldn't be a second, more-discoverable copy of a
+# key string, even one that's already ambiently public elsewhere.
+EMBEDDED_KEY_PATTERNS = [
+    re.compile(r"(maps\.googleapis\.com/maps/api/js\?key=)[A-Za-z0-9_-]+"),
+]
 POLITENESS_SLEEP_SECONDS = 1
 
 REPO_ROOT = Path(__file__).resolve().parent
@@ -164,13 +174,19 @@ class RegionImageFinder(HTMLParser):
             self.image_url = src
 
 
+def redact_embedded_keys(html):
+    for pattern in EMBEDDED_KEY_PATTERNS:
+        html = pattern.sub(r"\1***REDACTED***", html)
+    return html
+
+
 def capture_situation(out_dir, errors, captured_files):
     try:
         resp = fetch(HOME_URL)
     except requests.RequestException as exc:
         errors.append("home page fetch failed: %s" % exc)
         return
-    html = resp.text
+    html = redact_embedded_keys(resp.text)
     situation_path = out_dir / "situation.html"
     situation_path.write_text(html, encoding="utf-8")
     captured_files.append(situation_path)
