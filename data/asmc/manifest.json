@@ -1,15 +1,15 @@
 {
-  "last_run_utc": "2026-07-17T02:29:48Z",
-  "last_success_utc": "2026-07-17T02:29:48Z",
+  "last_run_utc": "2026-07-17T02:31:31Z",
+  "last_success_utc": "2026-07-17T02:31:31Z",
   "files_captured": 5,
   "files": [
     {
       "path": "data/asmc/2026-07-17/situation.html",
-      "sha256": "c9b58d80a6eed419c583962ff596bd9dee0fb17519ba7d643976bc58ad8c50c6"
+      "sha256": "5e89b347993905218dc6dd64c5c7c4fcaee9c395752e7fd5e0f7ec1605034318"
     },
     {
       "path": "data/asmc/2026-07-17/situation.txt",
-      "sha256": "892e9e77fe0bd2ff5541ec92dee72331c44b9538e57bed4cf85f3ae6187d060f"
+      "sha256": "f0fd28a6ae7481969c3ddb85d835de88b2a7fd38e54dea52f2c1b4a1dfbc4a83"
     },
     {
       "path": "data/asmc/2026-07-17/hotspot_counts.json",
