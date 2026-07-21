@@ -1,28 +1,26 @@
 {
-  "last_run_utc": "2026-07-20T12:02:50Z",
+  "last_run_utc": "2026-07-21T11:27:39Z",
   "last_success_utc": "2026-07-20T12:02:50Z",
-  "files_captured": 5,
+  "files_captured": 4,
   "files": [
     {
-      "path": "data/asmc/2026-07-20/situation.html",
-      "sha256": "f4b8ee5a215b597c523e2f792b0e5982fa8357bd8613f90dbb93edd80a61afc7"
+      "path": "data/asmc/2026-07-21/situation.html",
+      "sha256": "ae69d07f238156d78cdbbbe14d19634045599e247d1836add166a362e55fd41a"
     },
     {
-      "path": "data/asmc/2026-07-20/situation.txt",
-      "sha256": "7f3f34dba32605e97c3496777a26c349b91e52149dc6958f1bb71c20653a8393"
+      "path": "data/asmc/2026-07-21/situation.txt",
+      "sha256": "feed6b50e66e44c5f22a424272d8de38bfa4dd3bdda6799f02e097cc1b17f3cd"
     },
     {
-      "path": "data/asmc/2026-07-20/hotspot_counts.json",
-      "sha256": "00e7bd4f032c26ebc3970b3c414efac7b5f31ad16b53746daaf783dca4aa0d13"
+      "path": "data/asmc/2026-07-21/hotspot_counts.json",
+      "sha256": "925c5d06b82b7cf7c78ede3b1500b287db7ad072dd636588c8068d9ac4083195"
     },
     {
-      "path": "data/asmc/2026-07-20/noaa20_sumatra.jpg",
-      "sha256": "28292c1b8a2778106351c68fe0e6b75548a91b81a34b47e5e909f9ba0df65a24"
-    },
-    {
-      "path": "data/asmc/2026-07-20/noaa20_kalimantan.jpg",
-      "sha256": "fd5d5ebe9566f05a6a6761ee4e6881f0b9bb09aaf57f0e7f86dd493f4da786b8"
+      "path": "data/asmc/2026-07-21/noaa20_kalimantan.jpg",
+      "sha256": "fb9b7bd30d86a8e30ba1a0ef47f647e01bfdec5280fd8a874927d94c21af3def"
     }
   ],
-  "errors": []
+  "errors": [
+    "NOAA-20 Sumatra image URL not found on satellite page (page structure changed)"
+  ]
 }
