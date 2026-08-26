@@ -1,27 +1,27 @@
 {
-  "last_run_utc": "2026-08-25T10:04:52Z",
-  "last_success_utc": "2026-08-25T10:04:52Z",
+  "last_run_utc": "2026-08-26T10:17:12Z",
+  "last_success_utc": "2026-08-26T10:17:12Z",
   "files_captured": 5,
   "files": [
     {
-      "path": "data/asmc/2026-08-25/situation.html",
-      "sha256": "3e61577443e8b45a2f3c46b63ba8a0da563b6e6b61ac5c76a1da395d57f0e2d3"
+      "path": "data/asmc/2026-08-26/situation.html",
+      "sha256": "cebead2063889acfd2d97129bd05b1685c2e791ab633f080d99226eb8b4ab653"
     },
     {
-      "path": "data/asmc/2026-08-25/situation.txt",
-      "sha256": "04dcee96718b9c8b57619263452fb8fa4648de886db0657c3a323db7b20929ef"
+      "path": "data/asmc/2026-08-26/situation.txt",
+      "sha256": "52c99661b16d586bb09385354a9215675640cf6af5fa41292a0048c7fce41a2c"
     },
     {
-      "path": "data/asmc/2026-08-25/hotspot_counts.json",
-      "sha256": "c4bf1156b034eed2ee805f8e7035eea59b85478e73c0ed95d33827f29cbd18fa"
+      "path": "data/asmc/2026-08-26/hotspot_counts.json",
+      "sha256": "d0dbe9dab04d6120fba0f30c5cbc96b0447cc023d283c27b21b3201aa73b59da"
     },
     {
-      "path": "data/asmc/2026-08-25/noaa20_sumatra.jpg",
-      "sha256": "d243c199a2324763c6f223755c3641352d1beb33965df3de43d69a205e0ae525"
+      "path": "data/asmc/2026-08-26/noaa20_sumatra.jpg",
+      "sha256": "5afd7bef3660e90130d8b07afa58204448e6f28181302819919ef6b0f8323dea"
     },
     {
-      "path": "data/asmc/2026-08-25/noaa20_kalimantan.jpg",
-      "sha256": "0479792d9f56d9c0a793cfb59175c6aeeaab9908dda16ec78a292d2ff58214a6"
+      "path": "data/asmc/2026-08-26/noaa20_kalimantan.jpg",
+      "sha256": "4eddc64951c71c42a5f2eff85062f8e840fca6080f8164e83c56de18b193fc94"
     }
   ],
   "errors": []
