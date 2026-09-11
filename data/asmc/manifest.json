@@ -1,11 +1,28 @@
 {
-  "last_run_utc": "2026-09-10T13:47:52Z",
-  "last_success_utc": "2026-09-09T13:53:34Z",
-  "files_captured": 0,
-  "files": [],
-  "errors": [
-    "home page fetch failed: 403 Client Error: Forbidden for url: https://asmc.asean.org/home/",
-    "hotspot count fetch failed: 403 Client Error: Forbidden for url: https://asmc.asean.org/wp-content/themes/asmctheme/page-functions/functions-ajax-haze-daily-hotspot-count-new.php",
-    "satellite page fetch failed: 403 Client Error: Forbidden for url: https://asmc.asean.org/satellite-polar/"
-  ]
+  "last_run_utc": "2026-09-11T13:49:01Z",
+  "last_success_utc": "2026-09-11T13:49:01Z",
+  "files_captured": 5,
+  "files": [
+    {
+      "path": "data/asmc/2026-09-11/situation.html",
+      "sha256": "52127aa7414c1a2257ddfafed87d5a980a7302bc2a12674d08ea34483cd517c7"
+    },
+    {
+      "path": "data/asmc/2026-09-11/situation.txt",
+      "sha256": "37311d229da8d6552e6c4166c23a4980ea6e0466b368d9efe5f688612ffafd57"
+    },
+    {
+      "path": "data/asmc/2026-09-11/hotspot_counts.json",
+      "sha256": "5bd13f4ac4a95b2bee9f524f9f3c5f049c41bef24ffd48d048b94dac1b654b5c"
+    },
+    {
+      "path": "data/asmc/2026-09-11/noaa20_sumatra.jpg",
+      "sha256": "86567302c5b1bc04685b698805dc1506053e7fb9adf671e8dd80958858ffbc6b"
+    },
+    {
+      "path": "data/asmc/2026-09-11/noaa20_kalimantan.jpg",
+      "sha256": "abbb75318ac95a247b30ad5c1d5498b7c385d8a2f71cd678af3c81328b1a71b6"
+    }
+  ],
+  "errors": []
 }
